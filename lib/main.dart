@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         ),
         home: Scaffold(
           appBar: AppBar(
-            title: const Text('Custom Slider'),
+            title: const Text('Image Manipulator'),
           ),
           body: const Center(
             child: HomeScreen(),
