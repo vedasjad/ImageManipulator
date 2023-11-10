@@ -21,14 +21,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
         ),
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Image Manipulator'),
-          ),
-          body: const Center(
-            child: HomeScreen(),
-          ),
-        ),
+        home: const HomeScreen(),
       ),
     );
   }

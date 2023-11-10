@@ -38,121 +38,200 @@ class _HomeScreenState extends State<HomeScreen> {
     final overlayLeftPosition =
         shapeLeftPosition + shapeWidth / 2 - overlaySize / 2;
     final overlayTopPosition = shapeTopPosition + shapeHeight * 0.041;
-    return SizedBox(
-      height: screenHeight,
-      child: Column(
-        children: [
-          SizedBox(
-            height: backgroundHeight,
-            width: backgroundHeight,
-            child: Stack(
-              children: [
-                Image.network(
-                  images.background.url,
-                  fit: BoxFit.fitHeight,
-                  height: backgroundHeight,
-                  width: backgroundHeight,
-                ),
-                Positioned(
-                  left: shapeLeftPosition,
-                  top: shapeTopPosition,
-                  child: Image.network(
-                    images.shape.url,
-                    height: shapeHeight,
-                    width: shapeWidth,
-                  ),
-                ),
-                Positioned(
-                  left: overlayLeftPosition,
-                  top: overlayTopPosition,
-                  child: Image.network(
-                    images.overlay.url,
-                    height: overlaySize,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Image Manipulator'),
+      ),
+      body: SizedBox(
+        height: screenHeight,
+        child: SingleChildScrollView(
+          child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(
+              SizedBox(
+                height: backgroundHeight,
+                width: backgroundHeight,
+                child: Stack(
                   children: [
-                    Text(
-                      "Move Horizontally",
+                    SizedBox(
+                      height: backgroundHeight,
+                      width: backgroundHeight,
+                      child: Image.network(
+                        images.background.url,
+                        fit: BoxFit.fitHeight,
+                        height: backgroundHeight,
+                        width: backgroundHeight,
+                        loadingBuilder: (context, child, loadingBuilder) {
+                          if (loadingBuilder == null) {
+                            return child;
+                          }
+                          return Padding(
+                            padding: EdgeInsets.all(backgroundHeight * 0.2),
+                            child: const CircularProgressIndicator(),
+                          );
+                        },
+                        errorBuilder: (context, child, loadingProgress) {
+                          return Container(
+                            alignment: Alignment.center,
+                            width: backgroundHeight,
+                            height: backgroundHeight,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Image Not Found',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HomeScreen(),
+                                        ),
+                                        (route) => false);
+                                  },
+                                  child: const Text(
+                                    "Retry",
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      left: shapeLeftPosition,
+                      top: shapeTopPosition,
+                      child: SizedBox(
+                        height: shapeHeight,
+                        width: shapeWidth,
+                        child: Image.network(
+                          images.shape.url,
+                          height: shapeHeight,
+                          width: shapeWidth,
+                          errorBuilder: (context, child, loadingProgress) {
+                            return SizedBox(
+                              width: backgroundHeight * 0.5,
+                              height: backgroundHeight * 0.5,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: overlayLeftPosition,
+                      top: overlayTopPosition,
+                      child: SizedBox(
+                        height: overlaySize,
+                        child: Image.network(
+                          images.overlay.url,
+                          height: overlaySize,
+                          errorBuilder: (context, child, loadingProgress) {
+                            return SizedBox(
+                              width: backgroundHeight * 0.5,
+                              height: backgroundHeight * 0.5,
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Slider(
-                value: horizontalSliderValue,
-                onChanged: (value) {
-                  setState(() {
-                    horizontalSliderValue = value;
-                  });
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "Move Vertically",
+              Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Move Horizontally",
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Slider(
-                value: verticalSliderValue,
-                onChanged: (value) {
-                  setState(() {
-                    verticalSliderValue = value;
-                  });
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "Resize Overlay",
+                  ),
+                  Slider(
+                    value: horizontalSliderValue,
+                    onChanged: (value) {
+                      setState(() {
+                        horizontalSliderValue = value;
+                      });
+                    },
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Move Vertically",
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Slider(
-                value: overlaySizeSliderValue,
-                onChanged: (value) {
-                  setState(() {
-                    overlaySizeSliderValue = value;
-                  });
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "Resize Shape",
+                  ),
+                  Slider(
+                    value: verticalSliderValue,
+                    onChanged: (value) {
+                      setState(() {
+                        verticalSliderValue = value;
+                      });
+                    },
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Resize Overlay",
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  Slider(
+                    value: overlaySizeSliderValue,
+                    onChanged: (value) {
+                      setState(() {
+                        overlaySizeSliderValue = value;
+                      });
+                    },
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Resize Shape",
+                        ),
+                      ],
+                    ),
+                  ),
+                  Slider(
+                    value: shapeSizeSliderValue,
+                    onChanged: (value) {
+                      setState(() {
+                        shapeSizeSliderValue = value;
+                      });
+                    },
+                  ),
+                ],
               ),
-              Slider(
-                value: shapeSizeSliderValue,
-                onChanged: (value) {
+              ElevatedButton(
+                onPressed: () {
                   setState(() {
-                    shapeSizeSliderValue = value;
+                    horizontalSliderValue = 0.5;
+                    verticalSliderValue = 0.5;
+                    overlaySizeSliderValue = 0.5;
+                    shapeSizeSliderValue = 0.5;
                   });
                 },
+                child: const Text("Reset"),
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
